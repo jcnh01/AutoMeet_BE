@@ -27,6 +27,7 @@ public class UserService {
                 .password(request.getPassword())
                 .name(request.getName())
                 .age(request.getAge())
+                .roles("ROLE_USER")
                 .build();
 
         userRepository.save(user);
