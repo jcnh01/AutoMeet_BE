@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserService {
+
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
 
     @Transactional
@@ -24,7 +26,7 @@ public class UserService {
 
         User user = User.builder()
                 .email(request.getEmail())
-                .password(request.getPassword())
+                .password(bCryptPasswordEncoder.encode(request.getPassword()))
                 .name(request.getName())
                 .age(request.getAge())
                 .roles("ROLE_USER")
