@@ -1,6 +1,12 @@
 package com.AutoMeet.global.auth.config;
 
+import com.AutoMeet.domain.user.repository.UserRepository;
 import com.AutoMeet.global.auth.PrincipalDetailsService;
+import com.AutoMeet.global.auth.jwt.AccessExpiredFilter;
+import com.AutoMeet.global.auth.jwt.JwtAuthenticationFilter;
+import com.AutoMeet.global.auth.jwt.JwtAuthorizationFilter;
+import com.AutoMeet.global.auth.jwt.JwtProperties;
+import com.AutoMeet.global.config.CorsConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +18,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -19,7 +27,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final CorsConfig corsConfig;
+    private final UserRepository userRepository;
     private final PrincipalDetailsService userDetailsService;
+    private final AccessExpiredFilter accessExpiredFilter;
+    private final JwtProperties jwtProperties;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -44,6 +56,11 @@ public class SecurityConfig {
         http.httpBasic(httpBasic ->
                 httpBasic.disable()
         );
+
+        http.addFilterBefore(corsConfig.corsFilter(), SecurityContextPersistenceFilter.class);
+        http.addFilterBefore(new JwtAuthenticationFilter(authenticationManager, jwtProperties), UsernamePasswordAuthenticationFilter.class);
+        http.addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository, jwtProperties));
+        http.addFilterBefore(accessExpiredFilter, JwtAuthorizationFilter.class);
 
         http.authorizeHttpRequests(authorize ->
                 authorize
