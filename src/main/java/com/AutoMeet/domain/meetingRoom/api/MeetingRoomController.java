@@ -24,6 +24,9 @@ import io.openvidu.java.client.OpenViduJavaClientException;
 import io.openvidu.java.client.Session;
 import io.openvidu.java.client.SessionProperties;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -82,7 +85,7 @@ public class MeetingRoomController {
         return new ResponseEntity<>(new CreateMeetingResponse(meetingId, meetingPw), HttpStatus.OK);
     }
 
-    @PostMapping("/connections")
+    @PostMapping("/connection")
     public ResponseEntity<String> createConnection(@RequestBody ConnectMeetingRequest connectMeetingRequest,
                                                    @AuthenticationPrincipal PrincipalDetails principal)
             throws OpenViduJavaClientException, OpenViduHttpException {
@@ -107,6 +110,24 @@ public class MeetingRoomController {
         Connection connection = session.createConnection(properties); // session과의 연결
 
         return new ResponseEntity<>(connection.getToken(), HttpStatus.OK);
+    }
+
+    @DeleteMapping("disconnection/{encodeRoomId}/{encodePlayerNickname}")
+    public ResponseEntity<String> disconnectionRoom(@PathVariable String encodeRoomId,
+                                                    @AuthenticationPrincipal PrincipalDetails principal) throws UnsupportedEncodingException {
+        String meetingId = URLDecoder.decode(encodeRoomId, StandardCharsets.UTF_8);
+
+        meetingRoomService.disconnect(meetingId, principal.getUser());
+
+        Integer userCnt = meetingRoomService.userCnt(meetingId);
+        if (userCnt == 0) {
+            // 모두 나가면 회의실을 삭제한다.
+            meetingRoomService.deleteMeeting(meetingId); // db에서 삭제
+            this.meetingConnection.remove(meetingId); // 회의실 비밀번호 map 삭제
+            this.sessionRoomConvert.remove(meetingId); // meeting 세션 삭제
+        }
+
+        return new ResponseEntity<>("Leave 처리 성공", HttpStatus.OK);
     }
 
 }

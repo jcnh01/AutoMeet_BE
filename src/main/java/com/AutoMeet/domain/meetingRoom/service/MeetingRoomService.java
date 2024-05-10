@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -46,5 +47,32 @@ public class MeetingRoomService {
                 () -> new MeetingNotExistException(meetingId));
 
         meeting.getUserIds().add(userId);
+    }
+
+    @Transactional
+    public void disconnect(String meetingId, User user) {
+        MeetingRoom meeting = meetingRoomRepository.findById(meetingId).orElseThrow(
+                () -> new MeetingNotExistException(meetingId));
+
+        List<Long> userIds = meeting.getUserIds();
+        userIds.remove(user.getId());
+
+        meetingRoomRepository.save(meeting);
+    }
+
+    public Integer userCnt(String meetingId) {
+        MeetingRoom meeting = meetingRoomRepository.findById(meetingId).orElseThrow(
+                () -> new MeetingNotExistException(meetingId));
+
+        List<Long> userIds = meeting.getUserIds();
+        return userIds.size();
+    }
+
+    @Transactional
+    public void deleteMeeting(String meetingId) {
+        MeetingRoom meeting = meetingRoomRepository.findById(meetingId).orElseThrow(
+                () -> new MeetingNotExistException(meetingId));
+
+        meetingRoomRepository.delete(meeting);
     }
 }
