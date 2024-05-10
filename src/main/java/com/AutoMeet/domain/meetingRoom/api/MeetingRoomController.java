@@ -5,6 +5,7 @@ import com.AutoMeet.domain.meetingRoom.dto.request.CreateMeetingRequest;
 import com.AutoMeet.domain.meetingRoom.dto.response.CreateMeetingResponse;
 import com.AutoMeet.domain.meetingRoom.exception.SessionNotExistException;
 import com.AutoMeet.domain.meetingRoom.service.MeetingRoomService;
+import com.AutoMeet.global.auth.PrincipalDetails;
 import jakarta.annotation.PostConstruct;
 
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import io.openvidu.java.client.Connection;
@@ -31,7 +33,7 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/sessions")
-public class OpenviduController {
+public class MeetingRoomController {
 
     @Value("${OPENVIDU_URL}")
     private String OPENVIDU_URL;
@@ -54,10 +56,11 @@ public class OpenviduController {
     }
 
     @PostMapping("")
-    public ResponseEntity<CreateMeetingResponse> initializeSession(@RequestBody CreateMeetingRequest createMeetingRequest)
+    public ResponseEntity<CreateMeetingResponse> initializeSession(@RequestBody CreateMeetingRequest createMeetingRequest,
+                                                                   @AuthenticationPrincipal PrincipalDetails principal)
             throws OpenViduJavaClientException, OpenViduHttpException {
 
-        meetingRoomService.createMeeting(createMeetingRequest.getMeetingId(), createMeetingRequest);
+        meetingRoomService.createMeeting(createMeetingRequest.getMeetingId(), createMeetingRequest, principal.getUser());
         String meetingId = createMeetingRequest.getMeetingId();
         String meetingPw = createMeetingRequest.getPassword();
 
@@ -79,5 +82,31 @@ public class OpenviduController {
         return new ResponseEntity<>(new CreateMeetingResponse(meetingId, meetingPw), HttpStatus.OK);
     }
 
+    @PostMapping("/connections")
+    public ResponseEntity<String> createConnection(@RequestBody ConnectMeetingRequest connectMeetingRequest,
+                                                   @AuthenticationPrincipal PrincipalDetails principal)
+            throws OpenViduJavaClientException, OpenViduHttpException {
+
+        String meetingId = connectMeetingRequest.getMeetingId();
+        String sessionId = sessionRoomConvert.get(meetingId);
+
+        Session session = openvidu.getActiveSession(sessionId);
+        if (session == null) {
+            throw new SessionNotExistException(sessionId);
+        }
+
+        // 비밀번호 검증 필요
+
+        Long userId = principal.getUser().getId();
+        meetingRoomService.joinMeetingRoom(meetingId, userId);
+
+        Map<String, String> meetingMap = new HashMap<>();
+        meetingMap.put("customSessionId", this.sessionRoomConvert.get(meetingId));
+
+        ConnectionProperties properties = ConnectionProperties.fromJson(meetingMap).build();
+        Connection connection = session.createConnection(properties); // session과의 연결
+
+        return new ResponseEntity<>(connection.getToken(), HttpStatus.OK);
+    }
 
 }

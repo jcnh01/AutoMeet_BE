@@ -1,6 +1,7 @@
 package com.AutoMeet.domain.meetingRoom.service;
 
 import com.AutoMeet.domain.meetingRoom.dto.request.CreateMeetingRequest;
+import com.AutoMeet.domain.meetingRoom.exception.MeetingNotExistException;
 import com.AutoMeet.domain.meetingRoom.model.MeetingRoom;
 import com.AutoMeet.domain.meetingRoom.repository.MeetingRoomRepository;
 import com.AutoMeet.domain.user.model.User;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -36,5 +38,13 @@ public class MeetingRoomService {
         meeting.getUserIds().add(user.getId());
 
         meetingRoomRepository.save(meeting);
+    }
+
+    @Transactional
+    public void joinMeetingRoom(String meetingId, Long userId) {
+        MeetingRoom meeting = meetingRoomRepository.findById(meetingId).orElseThrow(
+                () -> new MeetingNotExistException(meetingId));
+
+        meeting.getUserIds().add(userId);
     }
 }
