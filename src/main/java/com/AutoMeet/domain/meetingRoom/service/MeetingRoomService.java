@@ -43,16 +43,14 @@ public class MeetingRoomService {
 
     @Transactional
     public void joinMeetingRoom(String meetingId, Long userId) {
-        MeetingRoom meeting = meetingRoomRepository.findById(meetingId).orElseThrow(
-                () -> new MeetingNotExistException(meetingId));
+        MeetingRoom meeting = findMeeting(meetingId);
 
         meeting.getUserIds().add(userId);
     }
 
     @Transactional
     public void disconnect(String meetingId, User user) {
-        MeetingRoom meeting = meetingRoomRepository.findById(meetingId).orElseThrow(
-                () -> new MeetingNotExistException(meetingId));
+        MeetingRoom meeting = findMeeting(meetingId);
 
         List<Long> userIds = meeting.getUserIds();
         userIds.remove(user.getId());
@@ -61,8 +59,7 @@ public class MeetingRoomService {
     }
 
     public Integer userCnt(String meetingId) {
-        MeetingRoom meeting = meetingRoomRepository.findById(meetingId).orElseThrow(
-                () -> new MeetingNotExistException(meetingId));
+        MeetingRoom meeting = findMeeting(meetingId);
 
         List<Long> userIds = meeting.getUserIds();
         return userIds.size();
@@ -70,9 +67,13 @@ public class MeetingRoomService {
 
     @Transactional
     public void deleteMeeting(String meetingId) {
-        MeetingRoom meeting = meetingRoomRepository.findById(meetingId).orElseThrow(
-                () -> new MeetingNotExistException(meetingId));
+        MeetingRoom meeting = findMeeting(meetingId);
 
         meetingRoomRepository.delete(meeting);
+    }
+
+    public MeetingRoom findMeeting(String meetingId) {
+        return meetingRoomRepository.findById(meetingId).orElseThrow(
+                () -> new MeetingNotExistException(meetingId));
     }
 }
