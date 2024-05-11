@@ -3,6 +3,7 @@ package com.AutoMeet.domain.user.api;
 import com.AutoMeet.domain.user.dto.request.UserRequestDto;
 import com.AutoMeet.domain.user.dto.request.UserResponseDto;
 import com.AutoMeet.domain.user.service.UserService;
+import com.AutoMeet.domain.user.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
