@@ -1,5 +1,9 @@
 package com.AutoMeet.domain.meet.service;
 
+import com.AutoMeet.domain.meet.model.Meet;
+import com.AutoMeet.domain.meet.repository.MeetRepository;
+import com.AutoMeet.domain.user.dto.request.UserResponseDto;
+import com.AutoMeet.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -9,10 +13,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MeetServiceImpl implements MeetService {
+
+    private final MeetRepository meetRepository;
 
     @Value("${flask_url}")
     private String flask_url;
@@ -29,5 +40,22 @@ public class MeetServiceImpl implements MeetService {
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
         return response.getBody();
+    }
+
+    @Override
+    @Transactional
+    public void save(String summarization, List<String> userNames) {
+
+        ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
+        ZonedDateTime seoulTime = ZonedDateTime.of(LocalDateTime.now(), seoulZoneId);
+
+        Meet meet = Meet.builder()
+                .title("title") // 제목은 나중에 수정할 예정
+                .content(summarization)
+                .userNames(userNames)
+                .finishedTime(seoulTime.toLocalDateTime())
+                .build();
+
+        meetRepository.save(meet);
     }
 }

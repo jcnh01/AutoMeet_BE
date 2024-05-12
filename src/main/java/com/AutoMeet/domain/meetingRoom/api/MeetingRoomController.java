@@ -1,12 +1,16 @@
 package com.AutoMeet.domain.meetingRoom.api;
 
+import com.AutoMeet.domain.meet.service.MeetService;
 import com.AutoMeet.domain.meetingRoom.dto.request.ConnectMeetingRequest;
 import com.AutoMeet.domain.meetingRoom.dto.request.CreateMeetingRequest;
 import com.AutoMeet.domain.meetingRoom.dto.request.RecordingRequest;
+import com.AutoMeet.domain.meetingRoom.dto.request.RecordingStopRequest;
 import com.AutoMeet.domain.meetingRoom.dto.response.CreateMeetingResponse;
 import com.AutoMeet.domain.meetingRoom.exception.MeetingNotExistException;
+import com.AutoMeet.domain.meetingRoom.exception.RecordingNotExistException;
 import com.AutoMeet.domain.meetingRoom.exception.SessionNotExistException;
 import com.AutoMeet.domain.meetingRoom.service.MeetingRoomService;
+import com.AutoMeet.domain.meetingRoom.service.MeetingRoomServiceImpl;
 import com.AutoMeet.global.auth.PrincipalDetails;
 import io.openvidu.java.client.*;
 import jakarta.annotation.PostConstruct;
@@ -23,6 +27,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,6 +48,7 @@ public class MeetingRoomController {
     private OpenVidu openvidu;
 
     private final MeetingRoomService meetingRoomService;
+    private final MeetService meetService;
 
     private Map<String, String> meetingConnection = new HashMap<>();
 
@@ -132,7 +138,7 @@ public class MeetingRoomController {
         return new ResponseEntity<>("Leave 처리 성공", HttpStatus.OK);
     }
 
-    @PostMapping("recording/start")
+    @PostMapping("/recording/start")
     public ResponseEntity<?> startRecording(@RequestBody RecordingRequest recordingRequest) {
 
         String meetingId = recordingRequest.getMeetingId();
@@ -160,6 +166,37 @@ public class MeetingRoomController {
             this.sessionRecordMap.put(sessionId, recording.getId());
 
             return new ResponseEntity<>("Recording Start", HttpStatus.OK);
+        } catch (OpenViduJavaClientException | OpenViduHttpException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/recording/stop")
+    public ResponseEntity<?> stopRecording(@RequestBody RecordingStopRequest request) {
+        String meetingId = request.getMeetingId();
+
+        String sessionId = sessionRoomConvert.get(meetingId);
+        if (sessionId == null) {
+            throw new MeetingNotExistException(meetingId);
+        }
+        String recordingId = this.sessionRecordMap.get(sessionId);
+        if (recordingId == null) {
+            throw new RecordingNotExistException(meetingId);
+        }
+
+        try {
+            Recording recording = this.openvidu.stopRecording(recordingId);
+            this.sessionRecordings.remove(recording.getSessionId());
+            // recording 기록 확인
+            // 확인 후 제거
+            this.sessionRecordMap.remove(sessionId);
+
+            String summarization = meetService.textSummarization(recording.getUrl());
+            List<String> userNames = meetingRoomService.findUsers(meetingId);
+
+            // summarization을 가지고 meet을 생성
+            meetService.save(summarization, userNames);
+            return new ResponseEntity<>("Recording Finish!", HttpStatus.OK);
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
