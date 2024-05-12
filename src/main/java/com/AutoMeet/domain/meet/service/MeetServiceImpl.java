@@ -1,9 +1,8 @@
 package com.AutoMeet.domain.meet.service;
 
+import com.AutoMeet.domain.meet.dto.response.MeetListResponse;
 import com.AutoMeet.domain.meet.model.Meet;
 import com.AutoMeet.domain.meet.repository.MeetRepository;
-import com.AutoMeet.domain.user.dto.request.UserResponseDto;
-import com.AutoMeet.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -17,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -57,5 +57,13 @@ public class MeetServiceImpl implements MeetService {
                 .build();
 
         meetRepository.save(meet);
+    }
+
+    public List<MeetListResponse> findMeet(Long userId) {
+        List<Meet> meets = meetRepository.findByUserIdsContains(userId);
+        List<MeetListResponse> meetList = meets.stream().map((meet) ->
+                        new MeetListResponse(meet.get_id(), meet.getTitle(), meet.getContent(), meet.getFinishedTime()))
+                .collect(Collectors.toList());
+        return meetList;
     }
 }
