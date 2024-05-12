@@ -1,8 +1,12 @@
 package com.AutoMeet.domain.meet.service;
 
 import com.AutoMeet.domain.meet.dto.response.MeetListResponse;
+import com.AutoMeet.domain.meet.dto.response.MeetingResponse;
+import com.AutoMeet.domain.meet.exception.NotYourMeetingException;
 import com.AutoMeet.domain.meet.model.Meet;
 import com.AutoMeet.domain.meet.repository.MeetRepository;
+import com.AutoMeet.domain.meetingRoom.exception.MeetingNotExistException;
+import com.AutoMeet.domain.meetingRoom.model.MeetingRoom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -16,6 +20,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,11 +64,25 @@ public class MeetServiceImpl implements MeetService {
         meetRepository.save(meet);
     }
 
-    public List<MeetListResponse> findMeet(Long userId) {
+    public List<MeetListResponse> findMeets(Long userId) {
         List<Meet> meets = meetRepository.findByUserIdsContains(userId);
         List<MeetListResponse> meetList = meets.stream().map((meet) ->
                         new MeetListResponse(meet.get_id(), meet.getTitle(), meet.getContent(), meet.getFinishedTime()))
                 .collect(Collectors.toList());
         return meetList;
+    }
+
+    public MeetingResponse findOne(String meetingId, Long userId) {
+        Meet meeting = findMeeting(meetingId);
+        if (!meeting.getUserNames().contains(userId)) {
+            throw new NotYourMeetingException(meetingId);
+        }
+        return new MeetingResponse(meeting.get_id(), meeting.getTitle(), meeting.getContent(),
+                meeting.getUserNames(), meeting.getFinishedTime());
+    }
+
+    public Meet findMeeting(String meetingId) {
+        return meetRepository.findById(meetingId).orElseThrow(
+                () -> new MeetingNotExistException(meetingId));
     }
 }
