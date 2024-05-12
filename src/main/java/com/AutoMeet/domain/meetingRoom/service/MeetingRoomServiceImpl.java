@@ -50,7 +50,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
     public void joinMeetingRoom(String meetingId, Long userId) {
         MeetingRoom meeting = findMeeting(meetingId);
 
-        meeting.getUserIds().add(userId);
+        meeting.joinUser(userId);
     }
 
     @Override
@@ -58,8 +58,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
     public void disconnect(String meetingId, User user) {
         MeetingRoom meeting = findMeeting(meetingId);
 
-        List<Long> userIds = meeting.getUserIds();
-        userIds.remove(user.getId());
+        meeting.deleteUser(user.getId());
 
         meetingRoomRepository.save(meeting);
     }

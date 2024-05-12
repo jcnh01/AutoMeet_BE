@@ -28,4 +28,12 @@ public class MeetingRoom {
         this.userIds = new ArrayList<>();
         this.startedTime = startedTime;
     }
+
+    public void joinUser(Long userId) {
+        userIds.add(userId);
+    }
+
+    public void deleteUser(Long userId) {
+        userIds.remove(userIds);
+    }
 }
