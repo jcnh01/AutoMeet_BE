@@ -7,7 +7,7 @@ import com.AutoMeet.domain.meet.exception.NotYourMeetingException;
 import com.AutoMeet.domain.meet.model.Meet;
 import com.AutoMeet.domain.meet.repository.MeetRepository;
 import com.AutoMeet.domain.meetingRoom.exception.MeetingNotExistException;
-import com.AutoMeet.domain.meetingRoom.model.MeetingRoom;
+import com.AutoMeet.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +29,7 @@ import java.util.stream.Collectors;
 public class MeetServiceImpl implements MeetService {
 
     private final MeetRepository meetRepository;
+    private final UserRepository userRepository;
 
     @Value("${flask_url}")
     private String flask_url;
@@ -50,7 +50,7 @@ public class MeetServiceImpl implements MeetService {
 
     @Override
     @Transactional
-    public void save(String summarization, List<String> userNames) {
+    public void save(String summarization, List<Long> userIds) {
 
         ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
         ZonedDateTime seoulTime = ZonedDateTime.of(LocalDateTime.now(), seoulZoneId);
@@ -58,7 +58,7 @@ public class MeetServiceImpl implements MeetService {
         Meet meet = Meet.builder()
                 .title("title") // 제목은 나중에 수정할 예정
                 .content(summarization)
-                .userNames(userNames)
+                .userIds(userIds)
                 .finishedTime(seoulTime.toLocalDateTime())
                 .build();
 
@@ -75,17 +75,22 @@ public class MeetServiceImpl implements MeetService {
 
     public MeetingResponse findOne(String meetingId, Long userId) {
         Meet meeting = findMeeting(meetingId);
-        if (!meeting.getUserNames().contains(userId)) {
+        if (!meeting.getUserIds().contains(userId)) {
             throw new NotYourMeetingException(meetingId);
         }
+
+        List<String> userNames = meeting.getUserIds().stream()
+                .map(id -> userRepository.findNameByUserId(id))
+                .collect(Collectors.toList());
+
         return new MeetingResponse(meeting.get_id(), meeting.getTitle(), meeting.getContent(),
-                meeting.getUserNames(), meeting.getFinishedTime());
+                userNames, meeting.getFinishedTime());
     }
 
     @Transactional
     public void updateMeeting(String meetingId, Long userId, UpdateMeetRequest request) {
         Meet meeting = findMeeting(meetingId);
-        if (!meeting.getUserNames().contains(userId)) {
+        if (!meeting.getUserIds().contains(userId)) {
             throw new NotYourMeetingException(meetingId);
         }
 
@@ -96,6 +101,4 @@ public class MeetServiceImpl implements MeetService {
         return meetRepository.findById(meetingId).orElseThrow(
                 () -> new MeetingNotExistException(meetingId));
     }
-
-
 }
