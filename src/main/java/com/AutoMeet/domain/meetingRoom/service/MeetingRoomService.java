@@ -11,5 +11,5 @@ public interface MeetingRoomService {
     public void disconnect(String meetingId, User user);
     public Integer userCnt(String meetingId);
     public void deleteMeeting(String meetingId);
-    public List<String> findUsers(String meetingId);
+    public List<Long> findUsers(String meetingId);
 }

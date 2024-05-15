@@ -80,14 +80,10 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
     }
 
     @Override
-    public List<String> findUsers(String meetingId) {
+    public List<Long> findUsers(String meetingId) {
         MeetingRoom meeting = findMeetingRoom(meetingId);
 
-        List<String> userNames = meeting.getUserIds().stream()
-                .map(userId -> userRepository.findNameByUserId(userId))
-                .collect(Collectors.toList());
-
-        return userNames;
+        return meeting.getUserIds();
     }
 
     public MeetingRoom findMeetingRoom(String meetingId) {

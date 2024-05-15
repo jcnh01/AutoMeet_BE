@@ -192,10 +192,10 @@ public class MeetingRoomController {
             this.sessionRecordMap.remove(sessionId);
 
             String summarization = meetService.textSummarization(recording.getUrl());
-            List<String> userNames = meetingRoomService.findUsers(meetingId);
+            List<Long> userIds = meetingRoomService.findUsers(meetingId);
 
             // summarization을 가지고 meet을 생성
-            meetService.save(summarization, userNames);
+            meetService.save(summarization, userIds);
             return new ResponseEntity<>("Recording Finish!", HttpStatus.OK);
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
