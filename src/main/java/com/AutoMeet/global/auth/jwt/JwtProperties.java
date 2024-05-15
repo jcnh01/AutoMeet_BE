@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtProperties {
 
+    @Value("${jwt.secret}")
+    private String secret;
+
     private Integer expirationTime = 1200000;
 
     private Integer refreshTokenTime = 604800000;
