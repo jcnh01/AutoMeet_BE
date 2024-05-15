@@ -27,4 +27,9 @@ public class Meet { // 회의의 결과를 저장
         this.userNames = userNames;
         this.finishedTime = finishedTime;
     }
+
+    public void updateMeeting(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }

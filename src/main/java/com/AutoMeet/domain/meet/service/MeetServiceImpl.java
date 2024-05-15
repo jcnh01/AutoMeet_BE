@@ -1,5 +1,6 @@
 package com.AutoMeet.domain.meet.service;
 
+import com.AutoMeet.domain.meet.dto.request.UpdateMeetRequest;
 import com.AutoMeet.domain.meet.dto.response.MeetListResponse;
 import com.AutoMeet.domain.meet.dto.response.MeetingResponse;
 import com.AutoMeet.domain.meet.exception.NotYourMeetingException;
@@ -81,8 +82,20 @@ public class MeetServiceImpl implements MeetService {
                 meeting.getUserNames(), meeting.getFinishedTime());
     }
 
+    @Transactional
+    public void updateMeeting(String meetingId, Long userId, UpdateMeetRequest request) {
+        Meet meeting = findMeeting(meetingId);
+        if (!meeting.getUserNames().contains(userId)) {
+            throw new NotYourMeetingException(meetingId);
+        }
+
+        meeting.updateMeeting(request.getTitle(), request.getContent());
+    }
+
     public Meet findMeeting(String meetingId) {
         return meetRepository.findById(meetingId).orElseThrow(
                 () -> new MeetingNotExistException(meetingId));
     }
+
+
 }

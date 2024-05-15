@@ -1,5 +1,6 @@
 package com.AutoMeet.domain.meet.service;
 
+import com.AutoMeet.domain.meet.dto.request.UpdateMeetRequest;
 import com.AutoMeet.domain.meet.dto.response.MeetListResponse;
 import com.AutoMeet.domain.meet.dto.response.MeetingResponse;
 import com.AutoMeet.domain.meet.model.Meet;
@@ -11,4 +12,5 @@ public interface MeetService {
     public void save(String summarization, List<String> userNames);
     public List<MeetListResponse> findMeets(Long userId);
     public MeetingResponse findOne(String meetingId, Long userId);
+    public void updateMeeting(String meetingId, Long userId, UpdateMeetRequest request);
 }
