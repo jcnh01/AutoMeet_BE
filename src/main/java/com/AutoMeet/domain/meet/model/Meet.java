@@ -16,15 +16,15 @@ public class Meet { // 회의의 결과를 저장
     private String _id;
     private String title;
     private String content;
-    private List<String> userNames; // 참여자들을 리스트로 저장
+    private List<Long> userIds; // 참여자들을 리스트로 저장
 
     private LocalDateTime finishedTime;
 
     @Builder
-    public Meet(String title, String content, List<String> userNames, LocalDateTime finishedTime) {
+    public Meet(String title, String content, List<Long> userIds, LocalDateTime finishedTime) {
         this.title = title;
         this.content = content;
-        this.userNames = userNames;
+        this.userIds = userIds;
         this.finishedTime = finishedTime;
     }
 
