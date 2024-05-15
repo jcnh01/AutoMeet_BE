@@ -14,14 +14,16 @@ public class Comment {
     @Id
     private String _id;
     private Long userId; // 작성자
+    private String content;
     private String meetingId; // 회의 id
 
     private LocalDateTime createdAt;
 
     @Builder
-    public Comment(Long userId, String meetingId) {
+    public Comment(Long userId, String meetingId, String content, LocalDateTime createdAt) {
         this.userId = userId;
         this.meetingId = meetingId;
-        this.createdAt = LocalDateTime.now();
+        this.content = content;
+        this.createdAt = createdAt;
     }
 }
