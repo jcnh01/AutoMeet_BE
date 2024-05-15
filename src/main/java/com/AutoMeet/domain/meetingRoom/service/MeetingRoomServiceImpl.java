@@ -48,7 +48,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
     @Override
     @Transactional
     public void joinMeetingRoom(String meetingId, Long userId) {
-        MeetingRoom meeting = findMeeting(meetingId);
+        MeetingRoom meeting = findMeetingRoom(meetingId);
 
         meeting.joinUser(userId);
     }
@@ -56,7 +56,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
     @Override
     @Transactional
     public void disconnect(String meetingId, User user) {
-        MeetingRoom meeting = findMeeting(meetingId);
+        MeetingRoom meeting = findMeetingRoom(meetingId);
 
         meeting.deleteUser(user.getId());
 
@@ -65,7 +65,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
 
     @Override
     public Integer userCnt(String meetingId) {
-        MeetingRoom meeting = findMeeting(meetingId);
+        MeetingRoom meeting = findMeetingRoom(meetingId);
 
         List<Long> userIds = meeting.getUserIds();
         return userIds.size();
@@ -74,14 +74,14 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
     @Override
     @Transactional
     public void deleteMeeting(String meetingId) {
-        MeetingRoom meeting = findMeeting(meetingId);
+        MeetingRoom meeting = findMeetingRoom(meetingId);
 
         meetingRoomRepository.delete(meeting);
     }
 
     @Override
     public List<String> findUsers(String meetingId) {
-        MeetingRoom meeting = findMeeting(meetingId);
+        MeetingRoom meeting = findMeetingRoom(meetingId);
 
         List<String> userNames = meeting.getUserIds().stream()
                 .map(userId -> userRepository.findNameByUserId(userId))
@@ -90,7 +90,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
         return userNames;
     }
 
-    public MeetingRoom findMeeting(String meetingId) {
+    public MeetingRoom findMeetingRoom(String meetingId) {
         return meetingRoomRepository.findById(meetingId).orElseThrow(
                 () -> new MeetingNotExistException(meetingId));
     }
