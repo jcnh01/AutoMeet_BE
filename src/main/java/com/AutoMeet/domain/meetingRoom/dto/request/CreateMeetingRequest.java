@@ -11,4 +11,5 @@ public class CreateMeetingRequest {
 
     private String meetingId;
     private String password;
+    private String meetingTitle;
 }

@@ -16,15 +16,17 @@ public class MeetingRoom {
     @Id
     private String _id;
     private String meetingId;
+    private String meetingTitle;
     private String password;
     private List<Long> userIds;
 
     private LocalDateTime startedTime;
 
     @Builder
-    public MeetingRoom(String meetingId, String password, LocalDateTime startedTime) {
+    public MeetingRoom(String meetingId, String password, String meetingTitle, LocalDateTime startedTime) {
         this.meetingId = meetingId;
         this.password = password;
+        this.meetingTitle = meetingTitle;
         this.userIds = new ArrayList<>();
         this.startedTime = startedTime;
     }

@@ -67,13 +67,13 @@ public class MeetingRoomController {
     }
 
     @PostMapping("")
-    public ResponseEntity<CreateMeetingResponse> initializeSession(@RequestBody CreateMeetingRequest createMeetingRequest,
+    public ResponseEntity<CreateMeetingResponse> initializeSession(@RequestBody CreateMeetingRequest request,
                                                                    @AuthenticationPrincipal PrincipalDetails principal)
             throws OpenViduJavaClientException, OpenViduHttpException {
 
-        meetingRoomService.createMeeting(createMeetingRequest.getMeetingId(), createMeetingRequest, principal.getUser());
-        String meetingId = createMeetingRequest.getMeetingId();
-        String meetingPw = createMeetingRequest.getPassword();
+        meetingRoomService.createMeeting(request.getMeetingId(), request, principal.getUser());
+        String meetingId = request.getMeetingId();
+        String meetingPw = request.getPassword();
 
         // meetingRoom마다 비밀번호를 저장해서 관리
         this.meetingConnection.put(meetingId, meetingPw);
@@ -193,9 +193,10 @@ public class MeetingRoomController {
 
             String summarization = meetService.textSummarization(recording.getUrl());
             List<Long> userIds = meetingRoomService.findUsers(meetingId);
+            String title = meetingRoomService.findMeetingTitle(meetingId);
 
             // summarization을 가지고 meet을 생성
-            meetService.save(summarization, userIds);
+            meetService.save(title, summarization, userIds);
             return new ResponseEntity<>("Recording Finish!", HttpStatus.OK);
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
