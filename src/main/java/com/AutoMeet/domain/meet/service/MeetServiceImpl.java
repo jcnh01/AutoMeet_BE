@@ -50,13 +50,13 @@ public class MeetServiceImpl implements MeetService {
 
     @Override
     @Transactional
-    public void save(String summarization, List<Long> userIds) {
+    public void save(String title, String summarization, List<Long> userIds) {
 
         ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
         ZonedDateTime seoulTime = ZonedDateTime.of(LocalDateTime.now(), seoulZoneId);
 
         Meet meet = Meet.builder()
-                .title("title") // 제목은 나중에 수정할 예정
+                .title(title)
                 .content(summarization)
                 .userIds(userIds)
                 .finishedTime(seoulTime.toLocalDateTime())

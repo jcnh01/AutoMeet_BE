@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 public class MeetingRoomServiceImpl implements MeetingRoomService{
 
     private final MeetingRoomRepository meetingRoomRepository;
-    private final UserRepository userRepository;
 
     @Override
     @Transactional
@@ -37,6 +36,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
         MeetingRoom meeting = MeetingRoom.builder()
                 .meetingId(meetingId)
                 .password(createMeetingRequest.getPassword())
+                .meetingTitle(createMeetingRequest.getMeetingTitle())
                 .startedTime(seoulTime.toLocalDateTime())
                 .build();
 
@@ -84,6 +84,11 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
         MeetingRoom meeting = findMeetingRoom(meetingId);
 
         return meeting.getUserIds();
+    }
+
+    @Override
+    public String findMeetingTitle(String meetingId) {
+        return findMeetingRoom(meetingId).getMeetingTitle();
     }
 
     public MeetingRoom findMeetingRoom(String meetingId) {

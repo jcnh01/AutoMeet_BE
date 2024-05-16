@@ -12,4 +12,5 @@ public interface MeetingRoomService {
     public Integer userCnt(String meetingId);
     public void deleteMeeting(String meetingId);
     public List<Long> findUsers(String meetingId);
+    public String findMeetingTitle(String meetingId);
 }

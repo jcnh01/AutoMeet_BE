@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface MeetService {
     public String textSummarization(String recordingUrl);
-    public void save(String summarization, List<Long> userIds);
+    public void save(String title, String summarization, List<Long> userIds);
     public List<MeetListResponse> findMeets(Long userId);
     public MeetingResponse findOne(String meetingId, Long userId);
     public void updateMeeting(String meetingId, Long userId, UpdateMeetRequest request);
