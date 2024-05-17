@@ -8,8 +8,9 @@ import org.springframework.http.HttpStatus;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ErrorCode {
 
-    // login
-    EMAIL_EXIST(HttpStatus.BAD_REQUEST, "Login01", "이메일이 이미 존재합니다."),
+    // user
+    EMAIL_EXIST(HttpStatus.BAD_REQUEST, "User01", "이메일이 이미 존재합니다."),
+    USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "User02", "해당 사용자가 존재하지 않습니다."),
 
     // auth
     ACCESS_TOKEN_EXPIRED(HttpStatus.BAD_REQUEST, "Auth01", "access 토큰이 만료되었습니다."),
