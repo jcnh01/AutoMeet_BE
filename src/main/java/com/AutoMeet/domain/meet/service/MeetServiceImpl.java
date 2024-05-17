@@ -65,6 +65,7 @@ public class MeetServiceImpl implements MeetService {
         meetRepository.save(meet);
     }
 
+    @Override
     public List<MeetListResponse> findMeets(Long userId) {
         List<Meet> meets = meetRepository.findByUserIdsContains(userId);
         List<MeetListResponse> meetList = meets.stream().map((meet) ->
@@ -73,6 +74,7 @@ public class MeetServiceImpl implements MeetService {
         return meetList;
     }
 
+    @Override
     public MeetingResponse findOne(String meetingId, Long userId) {
         Meet meeting = findMeeting(meetingId);
         if (!meeting.getUserIds().contains(userId)) {
@@ -87,6 +89,7 @@ public class MeetServiceImpl implements MeetService {
                 userNames, meeting.getFinishedTime());
     }
 
+    @Override
     @Transactional
     public void updateMeeting(String meetingId, Long userId, UpdateMeetRequest request) {
         Meet meeting = findMeeting(meetingId);
@@ -97,8 +100,14 @@ public class MeetServiceImpl implements MeetService {
         meeting.updateMeeting(request.getTitle(), request.getContent());
     }
 
+    @Override
     public Meet findMeeting(String meetingId) {
         return meetRepository.findById(meetingId).orElseThrow(
                 () -> new MeetingNotExistException(meetingId));
+    }
+
+    @Override
+    public void saveMeeting(Meet meeting) {
+        meetRepository.save(meeting);
     }
 }

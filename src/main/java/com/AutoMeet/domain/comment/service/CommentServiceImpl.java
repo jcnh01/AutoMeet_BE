@@ -1,7 +1,6 @@
 package com.AutoMeet.domain.comment.service;
 
 import com.AutoMeet.domain.comment.Comment;
-import com.AutoMeet.domain.comment.repository.CommentRepository;
 import com.AutoMeet.domain.meet.exception.NotYourMeetingException;
 import com.AutoMeet.domain.meet.model.Meet;
 import com.AutoMeet.domain.meet.service.MeetService;
@@ -18,7 +17,6 @@ import java.time.ZonedDateTime;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
-    private final CommentRepository commentRepository;
     private final MeetService meetService;
 
     @Override
@@ -35,11 +33,13 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = Comment.builder()
                 .userId(userId)
                 .content(content)
-                .meetingId(meetingId)
                 .createdAt(seoulTime.toLocalDateTime())
                 .build();
 
-        commentRepository.save(comment);
+        Meet meeting = meetService.findMeeting(meetingId);
+
+        meeting.addComment(comment);
+        meetService.saveMeeting(meeting);
     }
 
     public Boolean IsMeetingUser(Long userId, String meetingId) {

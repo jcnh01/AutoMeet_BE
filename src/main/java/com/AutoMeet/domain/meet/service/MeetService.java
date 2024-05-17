@@ -14,4 +14,5 @@ public interface MeetService {
     public MeetingResponse findOne(String meetingId, Long userId);
     public void updateMeeting(String meetingId, Long userId, UpdateMeetRequest request);
     public Meet findMeeting(String meetingId);
+    public void saveMeeting(Meet meeting);
 }
