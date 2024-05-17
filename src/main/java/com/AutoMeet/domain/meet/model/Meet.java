@@ -1,11 +1,13 @@
 package com.AutoMeet.domain.meet.model;
 
+import com.AutoMeet.domain.comment.Comment;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "meet")
@@ -17,6 +19,8 @@ public class Meet { // 회의의 결과를 저장
     private String title;
     private String content;
     private List<Long> userIds; // 참여자들을 리스트로 저장
+
+    private List<Comment> comments;
 
     private LocalDateTime finishedTime;
 
@@ -31,5 +35,15 @@ public class Meet { // 회의의 결과를 저장
     public void updateMeeting(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public void addComment(Comment comment) {
+        if (this.comments == null) {
+            this.comments = new ArrayList<>();
+            comments.add(comment);
+        }
+        else {
+            comments.add(comment);
+        }
     }
 }
