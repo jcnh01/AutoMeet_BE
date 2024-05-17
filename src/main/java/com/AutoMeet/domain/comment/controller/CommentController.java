@@ -1,6 +1,6 @@
 package com.AutoMeet.domain.comment.controller;
 
-import com.AutoMeet.domain.comment.dto.CreateCommentRequest;
+import com.AutoMeet.domain.comment.dto.request.CreateCommentRequest;
 import com.AutoMeet.domain.comment.service.CommentService;
 import com.AutoMeet.global.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;

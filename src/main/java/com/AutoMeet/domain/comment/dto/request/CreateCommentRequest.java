@@ -1,4 +1,4 @@
-package com.AutoMeet.domain.comment.dto;
+package com.AutoMeet.domain.comment.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

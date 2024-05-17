@@ -30,7 +30,6 @@ public class MeetController {
     public ResponseEntity<MeetingResponse> findOne(@PathVariable String meetingId,
                                                    @AuthenticationPrincipal PrincipalDetails principal) {
         MeetingResponse meeting = meetService.findOne(meetingId, principal.getUser().getId());
-        // 댓글 부분 추가하면 여기에도 넣어줘야 함
 
         return ResponseEntity.ok(meeting);
     }

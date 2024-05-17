@@ -1,6 +1,7 @@
 package com.AutoMeet.domain.meet.service;
 
 import com.AutoMeet.domain.comment.domain.Comment;
+import com.AutoMeet.domain.comment.dto.response.CommentListResponse;
 import com.AutoMeet.domain.meet.dto.request.UpdateMeetRequest;
 import com.AutoMeet.domain.meet.dto.response.MeetListResponse;
 import com.AutoMeet.domain.meet.dto.response.MeetingResponse;
@@ -86,10 +87,14 @@ public class MeetServiceImpl implements MeetService {
                 .map(id -> userRepository.findNameByUserId(id))
                 .collect(Collectors.toList());
 
-        List<Comment> comments = meeting.getComments();
+        List<CommentListResponse> comments = meeting.getComments().stream()
+                .map(comment -> new CommentListResponse(comment.getId(),
+                        userRepository.findNameByUserId(comment.getUserId()),
+                        comment.getContent() ,comment.getCreatedAt()))
+                .collect(Collectors.toList());
 
         return new MeetingResponse(meeting.get_id(), meeting.getTitle(), meeting.getContent(),
-                userNames, meeting.getFinishedTime());
+                userNames, meeting.getFinishedTime(), comments);
     }
 
     @Override

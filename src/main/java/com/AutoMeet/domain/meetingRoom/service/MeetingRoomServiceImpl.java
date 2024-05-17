@@ -5,7 +5,6 @@ import com.AutoMeet.domain.meetingRoom.exception.MeetingNotExistException;
 import com.AutoMeet.domain.meetingRoom.model.MeetingRoom;
 import com.AutoMeet.domain.meetingRoom.repository.MeetingRoomRepository;
 import com.AutoMeet.domain.user.model.User;
-import com.AutoMeet.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,9 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
