@@ -3,26 +3,24 @@ package com.AutoMeet.domain.comment;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-@Document(collection = "comment")
 @Getter
 public class Comment {
 
     @Id
-    private String _id;
+    private String id;
     private Long userId; // 작성자
     private String content;
-    private String meetingId; // 회의 id
 
     private LocalDateTime createdAt;
 
     @Builder
-    public Comment(Long userId, String meetingId, String content, LocalDateTime createdAt) {
+    public Comment(Long userId, String content, LocalDateTime createdAt) {
+        this.id = UUID.randomUUID().toString();
         this.userId = userId;
-        this.meetingId = meetingId;
         this.content = content;
         this.createdAt = createdAt;
     }
