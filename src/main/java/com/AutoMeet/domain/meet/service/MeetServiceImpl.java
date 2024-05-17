@@ -84,12 +84,12 @@ public class MeetServiceImpl implements MeetService {
         }
 
         List<String> userNames = meeting.getUserIds().stream()
-                .map(id -> userRepository.findNameByUserId(id))
+                .map(id -> userRepository.findNameById(id))
                 .collect(Collectors.toList());
 
         List<CommentListResponse> comments = meeting.getComments().stream()
                 .map(comment -> new CommentListResponse(comment.getId(),
-                        userRepository.findNameByUserId(comment.getUserId()),
+                        userRepository.findNameById(comment.getUserId()),
                         comment.getContent() ,comment.getCreatedAt()))
                 .collect(Collectors.toList());
 
