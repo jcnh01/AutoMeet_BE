@@ -1,6 +1,6 @@
 package com.AutoMeet.domain.meet.model;
 
-import com.AutoMeet.domain.comment.Comment;
+import com.AutoMeet.domain.comment.domain.Comment;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;

@@ -1,6 +1,6 @@
 package com.AutoMeet.domain.comment.service;
 
-import com.AutoMeet.domain.comment.Comment;
+import com.AutoMeet.domain.comment.domain.Comment;
 import com.AutoMeet.domain.meet.exception.NotYourMeetingException;
 import com.AutoMeet.domain.meet.model.Meet;
 import com.AutoMeet.domain.meet.service.MeetService;

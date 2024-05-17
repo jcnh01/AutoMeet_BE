@@ -1,4 +1,4 @@
-package com.AutoMeet.domain.comment;
+package com.AutoMeet.domain.comment.domain;
 
 import lombok.Builder;
 import lombok.Getter;
