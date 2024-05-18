@@ -36,6 +36,6 @@ public class MeetingRoom {
     }
 
     public void deleteUser(Long userId) {
-        userIds.remove(userIds);
+        userIds.remove(userId);
     }
 }
