@@ -71,7 +71,7 @@ public class MeetingRoomController {
                                                                    @AuthenticationPrincipal PrincipalDetails principal)
             throws OpenViduJavaClientException, OpenViduHttpException {
 
-        meetingRoomService.createMeeting(request.getMeetingId(), request, principal.getUser());
+        meetingRoomService.createMeeting(request, principal.getUser());
         String meetingId = request.getMeetingId();
         String meetingPw = request.getPassword();
 
@@ -120,12 +120,12 @@ public class MeetingRoomController {
         return new ResponseEntity<>(connection.getToken(), HttpStatus.OK);
     }
 
-    @DeleteMapping("disconnection/{encodeRoomId}/{encodePlayerNickname}")
+    @DeleteMapping("disconnection/{encodeRoomId}")
     public ResponseEntity<String> disconnectionRoom(@PathVariable String encodeRoomId,
                                                     @AuthenticationPrincipal PrincipalDetails principal) throws UnsupportedEncodingException {
         String meetingId = URLDecoder.decode(encodeRoomId, StandardCharsets.UTF_8);
 
-        meetingRoomService.disconnect(meetingId, principal.getUser());
+        meetingRoomService.disconnect(meetingId, principal.getUser().getId());
 
         Integer userCnt = meetingRoomService.userCnt(meetingId);
         if (userCnt == 0) {

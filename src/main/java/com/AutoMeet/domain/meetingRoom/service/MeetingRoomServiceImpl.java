@@ -25,13 +25,13 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
 
     @Override
     @Transactional
-    public void createMeeting(String meetingId, final CreateMeetingRequest createMeetingRequest, User user) {
+    public String createMeeting(final CreateMeetingRequest createMeetingRequest, User user) {
 
         ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
         ZonedDateTime seoulTime = ZonedDateTime.of(LocalDateTime.now(), seoulZoneId);
 
         MeetingRoom meeting = MeetingRoom.builder()
-                .meetingId(meetingId)
+                .meetingId(createMeetingRequest.getMeetingId())
                 .password(createMeetingRequest.getPassword())
                 .meetingTitle(createMeetingRequest.getMeetingTitle())
                 .startedTime(seoulTime.toLocalDateTime())
@@ -39,7 +39,9 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
 
         meeting.getUserIds().add(user.getId());
 
-        meetingRoomRepository.save(meeting);
+        MeetingRoom meetingRoom = meetingRoomRepository.save(meeting);
+
+        return meetingRoom.get_id();
     }
 
     @Override
@@ -48,14 +50,16 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
         MeetingRoom meeting = findMeetingRoom(meetingId);
 
         meeting.joinUser(userId);
+
+        meetingRoomRepository.save(meeting);
     }
 
     @Override
     @Transactional
-    public void disconnect(String meetingId, User user) {
+    public void disconnect(String meetingId, Long userId) {
         MeetingRoom meeting = findMeetingRoom(meetingId);
 
-        meeting.deleteUser(user.getId());
+        meeting.deleteUser(userId);
 
         meetingRoomRepository.save(meeting);
     }
@@ -88,6 +92,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
         return findMeetingRoom(meetingId).getMeetingTitle();
     }
 
+    @Override
     public MeetingRoom findMeetingRoom(String meetingId) {
         return meetingRoomRepository.findById(meetingId).orElseThrow(
                 () -> new MeetingNotExistException(meetingId));
