@@ -33,7 +33,7 @@ public class MeetServiceImpl implements MeetService {
     private final MeetRepository meetRepository;
     private final UserRepository userRepository;
 
-    @Value("${flask_url}")
+    // @Value("${flask_url}")
     private String flask_url;
 
     @Override
@@ -52,7 +52,7 @@ public class MeetServiceImpl implements MeetService {
 
     @Override
     @Transactional
-    public void save(String title, String summarization, List<Long> userIds) {
+    public String save(String title, String summarization, List<Long> userIds) {
 
         ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
         ZonedDateTime seoulTime = ZonedDateTime.of(LocalDateTime.now(), seoulZoneId);
@@ -64,7 +64,9 @@ public class MeetServiceImpl implements MeetService {
                 .finishedTime(seoulTime.toLocalDateTime())
                 .build();
 
-        meetRepository.save(meet);
+        Meet meeting = meetRepository.save(meet);
+
+        return meeting.get_id();
     }
 
     @Override
@@ -106,6 +108,8 @@ public class MeetServiceImpl implements MeetService {
         }
 
         meeting.updateMeeting(request.getTitle(), request.getContent());
+
+        meetRepository.save(meeting);
     }
 
     @Override
