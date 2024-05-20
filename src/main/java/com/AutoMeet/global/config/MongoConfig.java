@@ -11,12 +11,12 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 @Configuration
 public class MongoConfig extends AbstractMongoClientConfiguration {
 
-    @Value("${mongo.uri}")
+    @Value("${spring.data.mongodb.uri}")
     private String mongoUri;
 
     @Override
     protected String getDatabaseName() {
-        return "AutoMeet";
+        return "AutoMeet-Cluster";
     }
 
     @Bean

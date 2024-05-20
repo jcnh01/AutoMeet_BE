@@ -41,6 +41,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
+        http.csrf(csrfConfigurer -> csrfConfigurer.disable());
         http.sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
@@ -53,19 +54,18 @@ public class SecurityConfig {
 
         http.authenticationManager(authenticationManager);
 
-        http.httpBasic(httpBasic ->
-                httpBasic.disable()
-        );
-
         http.addFilterBefore(corsConfig.corsFilter(), SecurityContextPersistenceFilter.class);
         http.addFilterBefore(new JwtAuthenticationFilter(authenticationManager, jwtProperties), UsernamePasswordAuthenticationFilter.class);
         http.addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository, jwtProperties));
         http.addFilterBefore(accessExpiredFilter, JwtAuthorizationFilter.class);
 
+        http.httpBasic(httpBasic ->
+                httpBasic.disable()
+        );
+
         http.authorizeHttpRequests(authorize ->
                 authorize
                         .requestMatchers("/api/user/**").permitAll()
-                        .requestMatchers("/api/token/**").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
         );
