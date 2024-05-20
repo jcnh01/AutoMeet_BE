@@ -8,8 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtProperties {
 
-    @Value("${jwt.secret}")
-    private String secret;
+    private String secret = "AutoMeet";
 
     private Integer expirationTime = 1200000;
 
