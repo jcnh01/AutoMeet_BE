@@ -18,11 +18,14 @@ spring :
   # mongodb
   data :
     mongodb :
-      uri : ${MONGODB_URI}
+      uri : mongodb+srv://joch4267:${MYSQL_PASSWORD}@automeet-cluster.obyp0ni.mongodb.net/?retryWrites=true&w=majority&appName=AutoMeet-Cluster
+
+mongo.uri : mongodb+srv://joch4267:${MYSQL_PASSWORD}@automeet-cluster.obyp0ni.mongodb.net/?retryWrites=true&w=majority&appName=AutoMeet-Cluster
 
 jwt.secret : ${JWT_SECRET}
 
+
 # openvidu
-OPENVIDU :
-  URL : ${OPENVIDU_URL}
-  SECRET : ${OPENVIDU_SECRET}
+OPENVIDU_URL : http://3.35.93.214:4443
+OPENVIDU_SECRET : AutoMeet
+
