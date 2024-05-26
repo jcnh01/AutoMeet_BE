@@ -9,6 +9,7 @@ import com.AutoMeet.domain.meetingRoom.dto.response.CreateMeetingResponse;
 import com.AutoMeet.domain.meetingRoom.exception.MeetingNotExistException;
 import com.AutoMeet.domain.meetingRoom.exception.RecordingNotExistException;
 import com.AutoMeet.domain.meetingRoom.exception.SessionNotExistException;
+import com.AutoMeet.domain.meetingRoom.exception.WrongPasswordException;
 import com.AutoMeet.domain.meetingRoom.service.MeetingRoomService;
 import com.AutoMeet.domain.meetingRoom.service.MeetingRoomServiceImpl;
 import com.AutoMeet.global.auth.PrincipalDetails;
@@ -106,7 +107,9 @@ public class MeetingRoomController {
             throw new SessionNotExistException(sessionId);
         }
 
-        // 비밀번호 검증 필요
+        if (!this.meetingConnection.get(meetingId).equals(connectMeetingRequest.getPassword())) {
+            throw new WrongPasswordException(meetingId);
+        }
 
         Long userId = principal.getUser().getId();
         meetingRoomService.joinMeetingRoom(meetingId, userId);

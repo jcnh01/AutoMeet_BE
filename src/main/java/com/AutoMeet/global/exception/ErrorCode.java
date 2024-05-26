@@ -19,7 +19,8 @@ public enum ErrorCode {
     SESSION_NOT_EXIST(HttpStatus.BAD_REQUEST, "Meeting01", "세션이 존재하지 않습니다."),
     MEETING_NOT_EXIST(HttpStatus.BAD_REQUEST, "Meeting02", "회의실이 존재하지 않습니다."),
     RECORDING_NOT_EXIST(HttpStatus.BAD_REQUEST, "Meeting03", "녹화가 진행되지 않고 있습니다."),
-    NOT_YOUR_MEETING(HttpStatus.BAD_REQUEST, "Meeting04", "사용자가 참여한 회의가 아닙니다.");
+    NOT_YOUR_MEETING(HttpStatus.BAD_REQUEST, "Meeting04", "사용자가 참여한 회의가 아닙니다."),
+    WRONG_PASSWORD(HttpStatus.BAD_REQUEST, "Meeting05", "비밀번호를 잘못 입력하셨습니다.");
 
 
     private final HttpStatus status;
