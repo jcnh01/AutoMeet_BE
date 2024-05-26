@@ -47,7 +47,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
     @Override
     @Transactional
     public void joinMeetingRoom(String meetingId, Long userId) {
-        MeetingRoom meeting = findMeetingRoom(meetingId);
+        MeetingRoom meeting = findMeetingByMeetingId(meetingId);
 
         meeting.joinUser(userId);
 
@@ -57,7 +57,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
     @Override
     @Transactional
     public void disconnect(String meetingId, Long userId) {
-        MeetingRoom meeting = findMeetingRoom(meetingId);
+        MeetingRoom meeting = findMeetingByMeetingId(meetingId);
 
         meeting.deleteUser(userId);
 
@@ -66,7 +66,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
 
     @Override
     public Integer userCnt(String meetingId) {
-        MeetingRoom meeting = findMeetingRoom(meetingId);
+        MeetingRoom meeting = findMeetingByMeetingId(meetingId);
 
         List<Long> userIds = meeting.getUserIds();
         return userIds.size();
@@ -75,7 +75,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
     @Override
     @Transactional
     public void deleteMeeting(String meetingId) {
-        MeetingRoom meeting = findMeetingRoom(meetingId);
+        MeetingRoom meeting = findMeetingByMeetingId(meetingId);
 
         meetingRoomRepository.delete(meeting);
     }
@@ -95,6 +95,11 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
     @Override
     public MeetingRoom findMeetingRoom(String meetingId) {
         return meetingRoomRepository.findById(meetingId).orElseThrow(
+                () -> new MeetingNotExistException(meetingId));
+    }
+
+    public MeetingRoom findMeetingByMeetingId(String meetingId) {
+        return meetingRoomRepository.findByMeetingId(meetingId).orElseThrow(
                 () -> new MeetingNotExistException(meetingId));
     }
 }
