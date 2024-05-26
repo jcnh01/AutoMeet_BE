@@ -22,7 +22,6 @@ public enum ErrorCode {
     NOT_YOUR_MEETING(HttpStatus.BAD_REQUEST, "Meeting04", "사용자가 참여한 회의가 아닙니다."),
     WRONG_PASSWORD(HttpStatus.BAD_REQUEST, "Meeting05", "비밀번호를 잘못 입력하셨습니다.");
 
-
     private final HttpStatus status;
     private final String code;
     private final String message;

@@ -73,6 +73,7 @@ public class MeetingRoomController {
             throws OpenViduJavaClientException, OpenViduHttpException {
 
         meetingRoomService.createMeeting(request, principal.getUser());
+        
         String meetingId = request.getMeetingId();
         String meetingPw = request.getPassword();
 

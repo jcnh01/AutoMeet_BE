@@ -1,5 +1,6 @@
 package com.AutoMeet.domain.meetingRoom.exception;
 
+
 import com.AutoMeet.global.exception.ErrorCode;
 import com.AutoMeet.global.exception.ServiceException;
 
