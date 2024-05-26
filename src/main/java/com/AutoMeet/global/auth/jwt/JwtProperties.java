@@ -1,7 +1,6 @@
 package com.AutoMeet.global.auth.jwt;
 
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Getter
@@ -16,5 +15,5 @@ public class JwtProperties {
 
     private String tokenPrefix = "Bearer ";
 
-    private String headerString = "Authorization";
+    private String headerString = "Access-token";
 }
