@@ -55,4 +55,8 @@ public class Meet { // 회의의 결과를 저장
             }
         }
     }
+
+    public void deleteComment(String commentId) {
+        comments.removeIf(comment -> comment.getId().equals(commentId));
+    }
 }

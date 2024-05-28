@@ -1,5 +1,6 @@
 package com.AutoMeet.domain.comment.controller;
 
+import com.AutoMeet.domain.comment.dto.request.DeleteCommentRequest;
 import com.AutoMeet.domain.comment.dto.request.UpdateCommentRequest;
 import com.AutoMeet.domain.comment.dto.request.CreateCommentRequest;
 import com.AutoMeet.domain.comment.service.CommentService;
@@ -27,5 +28,12 @@ public class CommentController {
                               @AuthenticationPrincipal PrincipalDetails principal) {
         commentService.updateComment(request.getMeetingId(),
                 commentId, request.getNewContent(), principal.getUser().getId());
+    }
+
+    @DeleteMapping("/{commentId}")
+    public void deleteComment(@RequestBody DeleteCommentRequest request,
+                              @PathVariable String commentId,
+                              @AuthenticationPrincipal PrincipalDetails principal) {
+        commentService.deleteComment(request.getMeetingId(), commentId, principal.getUser().getId());
     }
 }
