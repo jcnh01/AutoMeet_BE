@@ -46,4 +46,13 @@ public class Meet { // 회의의 결과를 저장
             comments.add(comment);
         }
     }
+
+    public void updateComment(String commentId, String newContent) {
+        for (Comment comment : comments) {
+            if (comment.getId().equals(commentId)) {
+                comment.updateContent(newContent);
+                break;
+            }
+        }
+    }
 }

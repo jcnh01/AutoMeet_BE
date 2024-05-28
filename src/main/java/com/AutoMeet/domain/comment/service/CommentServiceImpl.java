@@ -42,6 +42,15 @@ public class CommentServiceImpl implements CommentService {
         meetService.saveMeeting(meeting);
     }
 
+    @Override
+    @Transactional
+    public void updateComment(String meetingId, String commentId, String newContent, Long userId) {
+        Meet meeting = meetService.findMeeting(meetingId);
+        meeting.updateComment(commentId, newContent);
+
+        meetService.saveMeeting(meeting);
+    }
+
     public Boolean IsMeetingUser(Long userId, String meetingId) {
         Meet meeting = meetService.findMeeting(meetingId);
 

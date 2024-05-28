@@ -24,4 +24,8 @@ public class Comment {
         this.content = content;
         this.createdAt = createdAt;
     }
+
+    public void updateContent(String newContent) {
+        this.content = newContent;
+    }
 }
