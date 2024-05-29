@@ -19,6 +19,6 @@ services:
       - "4443:4443"
       - "8888:8888"
     environment:
-      openvidu.publicurl: http://43.200.237.37:4443
+      openvidu.publicurl: https://43.200.237.37:4443
       OPENVIDU_SECRET: AutoMeet
     restart: always

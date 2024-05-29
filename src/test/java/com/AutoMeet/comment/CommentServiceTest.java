@@ -68,4 +68,58 @@ public class CommentServiceTest {
         Assertions.assertTrue(commentList.contains("댓글"));
         Assertions.assertTrue(commentList.contains("댓글1"));
     }
+
+    @Test
+    @Transactional
+    @DisplayName("comment 수정")
+    void updateComment() {
+        UserRequestDto userDto = new UserRequestDto("email@naver.com", "password", "kim", 20);
+        userService.join(userDto);
+        User user = userService.findByEmail(userDto.getEmail());
+
+        List<Long> userIds = new ArrayList<>();
+        userIds.add(user.getId());
+
+        String meetId = meetService.save("title", "content", userIds);
+
+        commentService.createComment(meetId, "댓글", user.getId());
+
+        Meet meeting = meetService.findMeeting(meetId);
+
+        List<Comment> comments = meeting.getComments();
+        String commentId = comments.get(0).getId();
+        // 실제 어플리케이션에서는 list의 commentId를 request로 받아옴
+
+        meeting.updateComment(commentId, "newContent");
+
+        List<String> commentList = comments.stream().map(comment -> comment.getContent()).collect(Collectors.toList());
+        Assertions.assertTrue(commentList.contains("newContent"));
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("comment 삭제")
+    void deleteComment() {
+        UserRequestDto userDto = new UserRequestDto("email@naver.com", "password", "kim", 20);
+        userService.join(userDto);
+        User user = userService.findByEmail(userDto.getEmail());
+
+        List<Long> userIds = new ArrayList<>();
+        userIds.add(user.getId());
+
+        String meetId = meetService.save("title", "content", userIds);
+
+        commentService.createComment(meetId, "댓글", user.getId());
+
+        Meet meeting = meetService.findMeeting(meetId);
+
+        List<Comment> comments = meeting.getComments();
+        String commentId = comments.get(0).getId();
+        // 실제 어플리케이션에서는 list의 commentId를 request로 받아옴
+
+        meeting.deleteComment(commentId);
+
+        List<String> commentList = comments.stream().map(comment -> comment.getContent()).collect(Collectors.toList());
+        Assertions.assertTrue(commentList.isEmpty());
+    }
 }
