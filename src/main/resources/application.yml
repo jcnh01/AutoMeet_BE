@@ -22,6 +22,6 @@ spring :
       # 환경변수 설정 에러로 인해서 비밀번호 간단화 - 배포 중에는 깃허브 private
 
 # openvidu
-OPENVIDU_URL : https://43.200.237.37:4443
+OPENVIDU_URL : http://43.200.237.37:4443
 OPENVIDU_SECRET : AutoMeet
 
