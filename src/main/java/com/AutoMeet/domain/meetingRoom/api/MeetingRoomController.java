@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -73,7 +73,7 @@ public class MeetingRoomController {
             throws OpenViduJavaClientException, OpenViduHttpException {
 
         meetingRoomService.createMeeting(request, principal.getUser());
-        
+
         String meetingId = request.getMeetingId();
         String meetingPw = request.getPassword();
 
