@@ -11,14 +11,3 @@ services:
       MYSQL_USER: $MYSQL_USER
       MYSQL_PASSWORD: $MYSQL_PASSWORD
     restart: always
-
-  openvidu:
-    image: openvidu/openvidu-server-kms:2.23.0
-    container_name: OpenVidu
-    ports:
-      - "4443:4443"
-      - "8888:8888"
-    environment:
-      openvidu.publicurl: http://43.200.237.37:4443
-      OPENVIDU_SECRET: AutoMeet
-    restart: always
