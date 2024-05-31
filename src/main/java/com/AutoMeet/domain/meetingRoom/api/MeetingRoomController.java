@@ -6,12 +6,12 @@ import com.AutoMeet.domain.meetingRoom.dto.request.CreateMeetingRequest;
 import com.AutoMeet.domain.meetingRoom.dto.request.RecordingRequest;
 import com.AutoMeet.domain.meetingRoom.dto.request.RecordingStopRequest;
 import com.AutoMeet.domain.meetingRoom.dto.response.CreateMeetingResponse;
+import com.AutoMeet.domain.meetingRoom.dto.response.RecordingResponse;
 import com.AutoMeet.domain.meetingRoom.exception.MeetingNotExistException;
 import com.AutoMeet.domain.meetingRoom.exception.RecordingNotExistException;
 import com.AutoMeet.domain.meetingRoom.exception.SessionNotExistException;
 import com.AutoMeet.domain.meetingRoom.exception.WrongPasswordException;
 import com.AutoMeet.domain.meetingRoom.service.MeetingRoomService;
-import com.AutoMeet.domain.meetingRoom.service.MeetingRoomServiceImpl;
 import com.AutoMeet.global.auth.PrincipalDetails;
 import io.openvidu.java.client.*;
 import jakarta.annotation.PostConstruct;
@@ -176,8 +176,8 @@ public class MeetingRoomController {
     }
 
     @PostMapping("/recording/stop")
-    public ResponseEntity<?> stopRecording(@RequestBody RecordingStopRequest request) {
-        String meetingId = request.getMeetingId();
+    public ResponseEntity<RecordingResponse> stopRecording(@RequestBody RecordingStopRequest request) {
+        String meetingId = request.getMeetingRoomId();
 
         String sessionId = sessionRoomConvert.get(meetingId);
         if (sessionId == null) {
@@ -200,10 +200,10 @@ public class MeetingRoomController {
             String title = meetingRoomService.findMeetingTitle(meetingId);
 
             // summarization을 가지고 meet을 생성
-            meetService.save(title, summarization, userIds);
-            return new ResponseEntity<>("Recording Finish!", HttpStatus.OK);
+            String meetId = meetService.save(title, summarization, userIds);
+            return new ResponseEntity<>(new RecordingResponse(meetId), HttpStatus.OK);
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
