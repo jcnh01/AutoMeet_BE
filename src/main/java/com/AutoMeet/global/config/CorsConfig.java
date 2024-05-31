@@ -20,6 +20,7 @@ public class CorsConfig {
         config.addAllowedOrigin("http://localhost:4443");
         config.addAllowedOrigin("http://43.200.237.37");
         config.addAllowedOrigin("https://43.200.237.37");
+        config.addAllowedOrigin("https://auto-meet.netlify.app");
         config.addAllowedHeader("*");
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
 
