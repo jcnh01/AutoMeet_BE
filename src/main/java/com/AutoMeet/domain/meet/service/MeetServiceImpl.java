@@ -1,6 +1,5 @@
 package com.AutoMeet.domain.meet.service;
 
-import com.AutoMeet.domain.comment.domain.Comment;
 import com.AutoMeet.domain.comment.dto.response.CommentListResponse;
 import com.AutoMeet.domain.meet.dto.request.UpdateMeetRequest;
 import com.AutoMeet.domain.meet.dto.response.MeetListResponse;
@@ -11,7 +10,6 @@ import com.AutoMeet.domain.meet.repository.MeetRepository;
 import com.AutoMeet.domain.meetingRoom.exception.MeetingNotExistException;
 import com.AutoMeet.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -33,13 +31,12 @@ public class MeetServiceImpl implements MeetService {
     private final MeetRepository meetRepository;
     private final UserRepository userRepository;
 
-    // @Value("${flask_url}")
-    private String flask_url;
+    private String flask_url = "http://54.82.4.8:5000/";
 
     @Override
     public String textSummarization(String recordingUrl) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = flask_url;
+        String url = flask_url + "/api/text_summarization";
 
         HttpEntity<String> entity = new HttpEntity<>(recordingUrl);
 
