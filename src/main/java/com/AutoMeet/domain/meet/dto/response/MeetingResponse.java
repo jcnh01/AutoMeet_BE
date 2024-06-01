@@ -1,6 +1,7 @@
 package com.AutoMeet.domain.meet.dto.response;
 
 import com.AutoMeet.domain.comment.dto.response.CommentListResponse;
+import com.AutoMeet.domain.meet.model.Analysis;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,5 +20,6 @@ public class MeetingResponse {
     private List<String> userNames;
     private LocalDateTime meetingTime;
     private List<CommentListResponse> comments;
+    private Analysis userAnalysis;
 }
 

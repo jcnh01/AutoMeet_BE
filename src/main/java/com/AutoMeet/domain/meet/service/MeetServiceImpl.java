@@ -128,9 +128,11 @@ public class MeetServiceImpl implements MeetService {
 
     @Override
     public List<MeetListResponse> findMeets(Long userId) {
-        List<Meet> meets = meetRepository.findByUserIdsContains(userId);
+        List<Meet> meets = meetRepository.findByAnalysisListUserId(userId);
+
         List<MeetListResponse> meetList = meets.stream().map((meet) ->
-                        new MeetListResponse(meet.get_id(), meet.getTitle(), meet.getContent(), meet.getFinishedTime()))
+                        new MeetListResponse(meet.get_id(), meet.getTitle(), meet.getContent(),
+                                meet.getFinishedTime()))
                 .collect(Collectors.toList());
         return meetList;
     }
@@ -155,8 +157,13 @@ public class MeetServiceImpl implements MeetService {
                         comment.getContent() ,comment.getCreatedAt()))
                 .collect(Collectors.toList());
 
+        Analysis userAnalysis = meeting.getAnalysisList().stream()
+                .filter(a -> a.getUserId().equals(userId))
+                .findFirst()
+                .orElse(null);
+
         return new MeetingResponse(meeting.get_id(), meeting.getTitle(), meeting.getContent(),
-                userNames, meeting.getFinishedTime(), comments);
+                userNames, meeting.getFinishedTime(), comments, userAnalysis);
     }
 
     @Override
