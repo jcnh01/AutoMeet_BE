@@ -6,5 +6,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface MeetRepository extends MongoRepository<Meet, String> {
-    List<Meet> findByUserIdsContains(Long userId);
+    List<Meet> findByAnalysisListUserId(Long userId);
 }
