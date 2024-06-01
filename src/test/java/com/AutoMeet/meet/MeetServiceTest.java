@@ -49,14 +49,12 @@ public class MeetServiceTest {
 
         userIds.add(user2.getId());
 
-        String meetId = meetService.save("title", "content", userIds);
+        String meetId = meetService.save("title", "content");
 
         Meet meeting = meetService.findMeeting(meetId);
 
         Assertions.assertEquals(meeting.getTitle(), "title");
         Assertions.assertEquals(meeting.getContent(), "content");
-        Assertions.assertTrue(meeting.getUserIds().containsAll(userIds));
-        Assertions.assertFalse(meeting.getUserIds().contains(user3.getId()));
 
         // 회의에 참여한 사용자가 아니면 조회 불가능
         assertThrows(NotYourMeetingException.class, () ->
@@ -84,7 +82,7 @@ public class MeetServiceTest {
 
         userIds.add(user2.getId());
 
-        String meetId = meetService.save("title", "content", userIds);
+        String meetId = meetService.save("title", "content");
 
         UpdateMeetRequest request = new UpdateMeetRequest("new title", "new content");
 
