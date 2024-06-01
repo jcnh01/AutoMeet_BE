@@ -1,10 +1,12 @@
 package com.AutoMeet.domain.meet.service;
 
+import com.AutoMeet.domain.comment.domain.Comment;
 import com.AutoMeet.domain.comment.dto.response.CommentListResponse;
 import com.AutoMeet.domain.meet.dto.request.UpdateMeetRequest;
 import com.AutoMeet.domain.meet.dto.response.MeetListResponse;
 import com.AutoMeet.domain.meet.dto.response.MeetingResponse;
 import com.AutoMeet.domain.meet.exception.NotYourMeetingException;
+import com.AutoMeet.domain.meet.model.Analysis;
 import com.AutoMeet.domain.meet.model.Meet;
 import com.AutoMeet.domain.meet.repository.MeetRepository;
 import com.AutoMeet.domain.meetingRoom.exception.MeetingNotExistException;
@@ -16,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -31,7 +34,7 @@ public class MeetServiceImpl implements MeetService {
     private final MeetRepository meetRepository;
     private final UserRepository userRepository;
 
-    private String flask_url = "http://54.82.4.8:5000/";
+    private String flask_url = "http://54.82.4.8:5000";
 
     @Override
     public String textSummarization(String recordingUrl) {
@@ -48,8 +51,37 @@ public class MeetServiceImpl implements MeetService {
     }
 
     @Override
+    public Long audioAnalysis(MultipartFile file) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = flask_url + "/api/audio_analysis";
+
+        HttpEntity<MultipartFile> entity = new HttpEntity<>(file);
+
+        // flask 서버에 POST 요청 보내기
+        // flask 서버에서 stt로 변환한 다음에 summarization 모델을 통한 요약본을 보내줌
+        ResponseEntity<Long> response = restTemplate.exchange(url, HttpMethod.POST, entity, Long.class);
+
+        return response.getBody();
+    }
+
+    @Override
     @Transactional
-    public String save(String title, String summarization, List<Long> userIds) {
+    public void textAnalysis(String meetingId, MultipartFile file, Long userId) {
+        Long audioScore = audioAnalysis(file);
+        Meet meeting = findMeeting(meetingId);
+
+        Analysis analysis = Analysis.builder()
+                .userId(userId).
+                sentimentScore(audioScore).build();
+
+        meeting.addAnalysis(analysis);
+
+        saveMeeting(meeting);
+    }
+
+    @Override
+    @Transactional
+    public String save(String title, String summarization) {
 
         ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
         ZonedDateTime seoulTime = ZonedDateTime.of(LocalDateTime.now(), seoulZoneId);
@@ -57,7 +89,6 @@ public class MeetServiceImpl implements MeetService {
         Meet meet = Meet.builder()
                 .title(title)
                 .content(summarization)
-                .userIds(userIds)
                 .finishedTime(seoulTime.toLocalDateTime())
                 .build();
 
@@ -78,11 +109,14 @@ public class MeetServiceImpl implements MeetService {
     @Override
     public MeetingResponse findOne(String meetingId, Long userId) {
         Meet meeting = findMeeting(meetingId);
-        if (!meeting.getUserIds().contains(userId)) {
+
+        List<Long> userIds = meeting.getAnalysisList().stream().map(a -> a.getUserId()).collect(Collectors.toList());
+
+        if (userIds.contains(userId)) {
             throw new NotYourMeetingException(meetingId);
         }
 
-        List<String> userNames = meeting.getUserIds().stream()
+        List<String> userNames = userIds.stream()
                 .map(id -> userRepository.findNameById(id))
                 .collect(Collectors.toList());
 
@@ -100,7 +134,10 @@ public class MeetServiceImpl implements MeetService {
     @Transactional
     public void updateMeeting(String meetingId, Long userId, UpdateMeetRequest request) {
         Meet meeting = findMeeting(meetingId);
-        if (!meeting.getUserIds().contains(userId)) {
+
+        List<Long> userIds = meeting.getAnalysisList().stream().map(a -> a.getUserId()).collect(Collectors.toList());
+
+        if (userIds.contains(userId)) {
             throw new NotYourMeetingException(meetingId);
         }
 

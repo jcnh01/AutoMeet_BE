@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -40,6 +41,15 @@ public class MeetController {
                                               @RequestBody UpdateMeetRequest request,
                                               @AuthenticationPrincipal PrincipalDetails principal) {
         meetService.updateMeeting(meetingId, principal.getUser().getId(), request);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{meetingId}/audio_analysis")
+    public ResponseEntity<Void> audioAnalysis(@RequestParam MultipartFile file,
+                                              @AuthenticationPrincipal PrincipalDetails principal,
+                                              @PathVariable String meetingId) {
+        meetService.textAnalysis(meetingId, file, principal.getUser().getId());
 
         return ResponseEntity.ok().build();
     }

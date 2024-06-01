@@ -18,17 +18,16 @@ public class Meet { // 회의의 결과를 저장
     private String _id;
     private String title;
     private String content;
-    private List<Long> userIds; // 참여자들을 리스트로 저장
+    private List<Analysis> analysisList; // 참여자들의 집중도, 만족도 점수
 
     private List<Comment> comments;
 
     private LocalDateTime finishedTime;
 
     @Builder
-    public Meet(String title, String content, List<Long> userIds, LocalDateTime finishedTime) {
+    public Meet(String title, String content, LocalDateTime finishedTime) {
         this.title = title;
         this.content = content;
-        this.userIds = userIds;
         this.finishedTime = finishedTime;
     }
 
@@ -58,5 +57,15 @@ public class Meet { // 회의의 결과를 저장
 
     public void deleteComment(String commentId) {
         comments.removeIf(comment -> comment.getId().equals(commentId));
+    }
+
+    public void addAnalysis(Analysis analysis) {
+        if (this.analysisList == null) {
+            this.analysisList = new ArrayList<>();
+            analysisList.add(analysis);
+        }
+        else {
+            analysisList.add(analysis);
+        }
     }
 }
