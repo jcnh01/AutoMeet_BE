@@ -52,7 +52,7 @@ public class CommentServiceTest {
 
         userIds.add(user2.getId());
 
-        String meetId = meetService.save("title", "content", userIds);
+        String meetId = meetService.save("title", "content");
 
         commentService.createComment(meetId, "댓글", user.getId());
 
@@ -80,7 +80,7 @@ public class CommentServiceTest {
         List<Long> userIds = new ArrayList<>();
         userIds.add(user.getId());
 
-        String meetId = meetService.save("title", "content", userIds);
+        String meetId = meetService.save("title", "content");
 
         commentService.createComment(meetId, "댓글", user.getId());
 
@@ -107,7 +107,7 @@ public class CommentServiceTest {
         List<Long> userIds = new ArrayList<>();
         userIds.add(user.getId());
 
-        String meetId = meetService.save("title", "content", userIds);
+        String meetId = meetService.save("title", "content");
 
         commentService.createComment(meetId, "댓글", user.getId());
 

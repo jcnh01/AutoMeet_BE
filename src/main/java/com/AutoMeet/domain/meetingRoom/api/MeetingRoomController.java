@@ -200,7 +200,7 @@ public class MeetingRoomController {
             String title = meetingRoomService.findMeetingTitle(meetingId);
 
             // summarization을 가지고 meet을 생성
-            String meetId = meetService.save(title, summarization, userIds);
+            String meetId = meetService.save(title, summarization);
             return new ResponseEntity<>(new RecordingResponse(meetId), HttpStatus.OK);
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);

@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -63,7 +65,8 @@ public class CommentServiceImpl implements CommentService {
     public Boolean IsMeetingUser(Long userId, String meetingId) {
         Meet meeting = meetService.findMeeting(meetingId);
 
-        return meeting.getUserIds().contains(userId);
-    }
+        List<Long> userIds = meeting.getAnalysisList().stream().map(a -> a.getUserId()).collect(Collectors.toList());
 
+        return userIds.contains(userId);
+    }
 }
