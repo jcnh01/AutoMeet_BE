@@ -19,4 +19,9 @@ public class Analysis {
         this.sentimentScore = sentimentScore;
         this.concentrationScore = null;
     }
+
+    public void changeAnalysis(Long score, Long concentration) {
+        this.sentimentScore = (sentimentScore + score) / 2;
+        this.concentrationScore = concentration;
+    }
 }

@@ -5,6 +5,7 @@ import com.AutoMeet.domain.comment.dto.response.CommentListResponse;
 import com.AutoMeet.domain.meet.dto.request.UpdateMeetRequest;
 import com.AutoMeet.domain.meet.dto.response.MeetListResponse;
 import com.AutoMeet.domain.meet.dto.response.MeetingResponse;
+import com.AutoMeet.domain.meet.dto.response.VideoAnalysisResponse;
 import com.AutoMeet.domain.meet.exception.NotYourMeetingException;
 import com.AutoMeet.domain.meet.model.Analysis;
 import com.AutoMeet.domain.meet.model.Meet;
@@ -57,8 +58,6 @@ public class MeetServiceImpl implements MeetService {
 
         HttpEntity<MultipartFile> entity = new HttpEntity<>(file);
 
-        // flask 서버에 POST 요청 보내기
-        // flask 서버에서 stt로 변환한 다음에 summarization 모델을 통한 요약본을 보내줌
         ResponseEntity<Long> response = restTemplate.exchange(url, HttpMethod.POST, entity, Long.class);
 
         return response.getBody();
@@ -75,6 +74,36 @@ public class MeetServiceImpl implements MeetService {
                 sentimentScore(audioScore).build();
 
         meeting.addAnalysis(analysis);
+
+        saveMeeting(meeting);
+    }
+
+    @Override
+    public VideoAnalysisResponse videoAnalysis(MultipartFile file) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = flask_url + "/api/video_analysis";
+
+        HttpEntity<MultipartFile> entity = new HttpEntity<>(file);
+
+        ResponseEntity<VideoAnalysisResponse> response = restTemplate.exchange(url, HttpMethod.POST, entity, VideoAnalysisResponse.class);
+
+        return response.getBody();
+    }
+
+    @Override
+    @Transactional
+    public void videoAnalysisSave(String meetingId, MultipartFile file, Long userId) {
+        VideoAnalysisResponse response = videoAnalysis(file);
+        Long score = response.getScore();
+        Long concentration = response.getConcentrationRatio();
+        Meet meeting = findMeeting(meetingId);
+
+        for (Analysis analysis : meeting.getAnalysisList()) {
+            if (analysis.getUserId().equals(userId)) {
+                analysis.changeAnalysis(score, concentration);
+                break;
+            }
+        }
 
         saveMeeting(meeting);
     }

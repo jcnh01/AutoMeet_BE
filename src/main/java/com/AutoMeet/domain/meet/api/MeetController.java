@@ -53,4 +53,13 @@ public class MeetController {
 
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/{meetingId}/video_analysis")
+    public ResponseEntity<Void> videoAnalysis(@RequestParam MultipartFile file,
+                                              @AuthenticationPrincipal PrincipalDetails principal,
+                                              @PathVariable String meetingId) {
+        meetService.videoAnalysisSave(meetingId, file, principal.getUser().getId());
+
+        return ResponseEntity.ok().build();
+    }
 }
