@@ -46,7 +46,7 @@ public class MeetController {
     }
 
     @PostMapping("/{meetingId}/audio_analysis")
-    public ResponseEntity<Void> audioAnalysis(@RequestParam MultipartFile file,
+    public ResponseEntity<Void> audioAnalysis(@RequestPart MultipartFile file,
                                               @AuthenticationPrincipal PrincipalDetails principal,
                                               @PathVariable String meetingId) {
         meetService.textAnalysis(meetingId, file, principal.getUser().getId());
@@ -55,7 +55,7 @@ public class MeetController {
     }
 
     @PostMapping("/{meetingId}/video_analysis")
-    public ResponseEntity<Void> videoAnalysis(@RequestParam MultipartFile file,
+    public ResponseEntity<Void> videoAnalysis(@RequestPart MultipartFile file,
                                               @AuthenticationPrincipal PrincipalDetails principal,
                                               @PathVariable String meetingId) {
         meetService.videoAnalysisSave(meetingId, file, principal.getUser().getId());
