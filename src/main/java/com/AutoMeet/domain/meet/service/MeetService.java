@@ -7,10 +7,11 @@ import com.AutoMeet.domain.meet.dto.response.VideoAnalysisResponse;
 import com.AutoMeet.domain.meet.model.Meet;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface MeetService {
-    public String textSummarization(String recordingUrl);
+    public String textSummarization(String recordingUrl) throws IOException;
     public Long audioAnalysis(MultipartFile file);
     public VideoAnalysisResponse videoAnalysis(MultipartFile file);
     public void textAnalysis(String meetingId, MultipartFile file, Long userId);

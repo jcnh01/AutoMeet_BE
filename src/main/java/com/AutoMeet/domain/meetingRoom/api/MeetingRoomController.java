@@ -24,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -204,6 +205,8 @@ public class MeetingRoomController {
             return new ResponseEntity<>(new RecordingResponse(meetId), HttpStatus.OK);
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

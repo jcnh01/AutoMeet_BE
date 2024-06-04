@@ -24,7 +24,11 @@ spring :
       uri : mongodb+srv://joch4267:11112222@automeet-cluster.obyp0ni.mongodb.net/?retryWrites=true&w=majority&appName=AutoMeet-Cluster
       # 환경변수 설정 에러로 인해서 비밀번호 간단화 - 배포 중에는 깃허브 private
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
 # openvidu
 OPENVIDU_URL : http://52.78.56.179:5443
 OPENVIDU_SECRET : AutoMeet
-
