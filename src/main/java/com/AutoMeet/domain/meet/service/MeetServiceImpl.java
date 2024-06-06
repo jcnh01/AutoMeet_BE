@@ -24,6 +24,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -53,10 +54,12 @@ public class MeetServiceImpl implements MeetService {
         String url = flask_url + "/api/text_summarization";
 
         // URL에서 파일을 다운로드
-        Path tempFile = Files.createTempFile("recording", ".mp4");
+        Path tempFile = Files.createTempFile("recording", ".wav");
         try (InputStream in = new URL(recordingUrl).openStream()) {
             Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
         }
+
+        File downloadedFile = tempFile.toFile();
 
         // 파일을 MultiValueMap으로 준비
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
@@ -181,7 +184,7 @@ public class MeetServiceImpl implements MeetService {
 
         List<Long> userIds = meeting.getAnalysisList().stream().map(a -> a.getUserId()).collect(Collectors.toList());
 
-        if (userIds.contains(userId)) {
+        if (!userIds.contains(userId)) {
             throw new NotYourMeetingException(meetingId);
         }
 
@@ -211,7 +214,7 @@ public class MeetServiceImpl implements MeetService {
 
         List<Long> userIds = meeting.getAnalysisList().stream().map(a -> a.getUserId()).collect(Collectors.toList());
 
-        if (userIds.contains(userId)) {
+        if (!userIds.contains(userId)) {
             throw new NotYourMeetingException(meetingId);
         }
 
