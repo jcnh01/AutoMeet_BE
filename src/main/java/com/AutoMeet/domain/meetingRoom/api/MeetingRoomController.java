@@ -23,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -157,12 +158,14 @@ public class MeetingRoomController {
         Recording.OutputMode outputMode = Recording.OutputMode.COMPOSED;
 
         boolean hasAudio = true;
-        boolean hasVideo = false;
+        boolean hasVideo = true;
 
         RecordingProperties properties = new RecordingProperties.Builder()
                 .outputMode(outputMode)
                 .hasAudio(hasAudio)
                 .hasVideo(hasVideo)
+                .resolution("640x480")
+                .frameRate(24)
                 .build();
 
         try {
@@ -207,6 +210,18 @@ public class MeetingRoomController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @PostMapping("/{meetingRoomId}/recording")
+    public ResponseEntity<RecordingResponse> recording(@PathVariable String meetingRoomId,
+                                                       @RequestPart("file") MultipartFile file) {
+
+        String summarization = meetService.summarization(file);
+        String title = meetingRoomService.findMeetingTitle(meetingRoomId);
+
+        String meetId = meetService.save(title, summarization);
+
+        return ResponseEntity.ok(new RecordingResponse(meetId));
     }
 
 }

@@ -1,6 +1,5 @@
 package com.AutoMeet.domain.meet.service;
 
-import com.AutoMeet.domain.comment.domain.Comment;
 import com.AutoMeet.domain.comment.dto.response.CommentListResponse;
 import com.AutoMeet.domain.meet.dto.request.UpdateMeetRequest;
 import com.AutoMeet.domain.meet.dto.response.MeetListResponse;
@@ -12,7 +11,6 @@ import com.AutoMeet.domain.meet.model.Meet;
 import com.AutoMeet.domain.meet.repository.MeetRepository;
 import com.AutoMeet.domain.meetingRoom.exception.MeetingNotExistException;
 import com.AutoMeet.domain.user.repository.UserRepository;
-import io.github.classgraph.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.FileSystemResource;
@@ -24,7 +22,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -49,7 +46,7 @@ public class MeetServiceImpl implements MeetService {
     private String flask_url = "http://54.82.4.8:5000";
 
     @Override
-    public String textSummarization(String recordingUrl) throws IOException  {
+    public String textSummarization(String recordingUrl) throws IOException {
         RestTemplate restTemplate = new RestTemplate();
         String url = flask_url + "/api/text_summarization";
 
@@ -59,7 +56,8 @@ public class MeetServiceImpl implements MeetService {
             Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
         }
 
-        File downloadedFile = tempFile.toFile();
+        System.out.println(recordingUrl);
+        System.out.println(tempFile);
 
         // 파일을 MultiValueMap으로 준비
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
@@ -78,6 +76,26 @@ public class MeetServiceImpl implements MeetService {
         Files.delete(tempFile);
 
         return response.getBody();
+    }
+
+    @Override
+    public String summarization(MultipartFile file) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = flask_url + "/api/text_summarization";
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("file", file.getResource());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<Map<String, List<String>>> response = restTemplate.exchange(url, HttpMethod.POST, entity, new ParameterizedTypeReference<Map<String, List<String>>>() {});
+
+        List<String> summaries = response.getBody().get("summary");
+
+        return summaries.get(0);
     }
 
     @Override
