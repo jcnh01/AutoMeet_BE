@@ -89,7 +89,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
 
     @Override
     public String findMeetingTitle(String meetingId) {
-        return findMeetingRoom(meetingId).getMeetingTitle();
+        return findMeetingByMeetingId(meetingId).getMeetingTitle();
     }
 
     @Override
