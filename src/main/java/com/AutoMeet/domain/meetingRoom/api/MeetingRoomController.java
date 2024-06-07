@@ -197,7 +197,6 @@ public class MeetingRoomController {
             this.sessionRecordMap.remove(sessionId);
 
             String summarization = meetService.textSummarization(recording.getUrl());
-            List<Long> userIds = meetingRoomService.findUsers(meetingId);
             String title = meetingRoomService.findMeetingTitle(meetingId);
 
             // summarization을 가지고 meet을 생성
