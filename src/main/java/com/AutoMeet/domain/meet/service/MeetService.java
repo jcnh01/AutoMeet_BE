@@ -12,6 +12,7 @@ import java.util.List;
 
 public interface MeetService {
     public String textSummarization(String recordingUrl) throws IOException;
+    public String summarization(MultipartFile file);
     public Long audioAnalysis(MultipartFile file);
     public VideoAnalysisResponse videoAnalysis(MultipartFile file);
     public void textAnalysis(String meetingId, MultipartFile file, Long userId);
