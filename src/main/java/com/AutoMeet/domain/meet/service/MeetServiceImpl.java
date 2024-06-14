@@ -31,6 +31,7 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -210,11 +211,14 @@ public class MeetServiceImpl implements MeetService {
                 .map(id -> userRepository.findNameById(id))
                 .collect(Collectors.toList());
 
-        List<CommentListResponse> comments = meeting.getComments().stream()
-                .map(comment -> new CommentListResponse(comment.getId(),
-                        userRepository.findNameById(comment.getUserId()),
-                        comment.getContent() ,comment.getCreatedAt()))
-                .collect(Collectors.toList());
+        List<CommentListResponse> comments = new ArrayList<>();
+        if (meeting.getComments() != null) {
+            comments = meeting.getComments().stream()
+                    .map(comment -> new CommentListResponse(comment.getId(),
+                            userRepository.findNameById(comment.getUserId()),
+                            comment.getContent(), comment.getCreatedAt()))
+                    .collect(Collectors.toList());
+        }
 
         Analysis userAnalysis = meeting.getAnalysisList().stream()
                 .filter(a -> a.getUserId().equals(userId))
