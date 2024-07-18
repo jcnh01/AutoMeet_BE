@@ -82,5 +82,5 @@ Transformer와 Sentiment Analysis AI 모델을 사용하여 회의 핵심 내용
 
 ## **CI/CD Architecture**
 <div align="center">
-    <img width="650" alt="CI/CD" src="https://github.com/user-attachments/assets/c095f118-8993-48e6-8358-0c16be3de987">
+    <img width="650" alt="CI/CD" src="https://github.com/user-attachments/assets/ba1a791b-6764-4cc6-bf38-37fed16096ca">
 </div>
