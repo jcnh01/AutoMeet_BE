@@ -3,7 +3,8 @@
 <br>
 
 ### **프로젝트 논문**
-[Transformer와 Sentiment Analysis 기반 회의 분위기 분석 및 자동 회의록 요약 서비스.pdf](https://github.com/user-attachments/files/16283198/Transformer.Sentiment.Analysis.pdf)
+[Transformer와 Sentiment Analysis 기반 회의 분위기 분석 및 자동 회의록 요약 서비스.pdf](https://github.com/user-attachments/files/17001064/Transformer.Sentiment.Analysis.pdf)
+
 
 <br>
 
@@ -18,11 +19,6 @@ Transformer와 Sentiment Analysis AI 모델을 사용하여 회의 핵심 내용
 - 전반적인 회의 기능을 구현하였으며, 사용자들이 회의만 진행해도 요약본, 개인별 피드백이 포함된 보고서가 자동 작성된다.
 
 <br>
-
-## **서비스 시연 영상**
-
-
-[서비스 시연 영상 유튜브 링크](https://www.youtube.com/embed/naqC0PjFeI8)
 
 
 
